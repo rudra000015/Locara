@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useStore, type OwnerPage } from '@/store/useStore';
 import { useT } from '@/i18n/useT';
-// import LanguageToggle from '@/components/ui/LanguageToggle';
+import LanguageToggle from '@/components/ui/LanguageToggle';
 import type { TranslationKey } from '@/i18n/translations';
 
 interface Props {

@@ -559,7 +559,7 @@ export default function HomePage({ query, filters, shops, loading, error, refetc
   const popularProducts = useMemo(() =>
     shops.flatMap((s, si) =>
       (s.products ?? []).map((p, pi) => ({ ...p, shopId: s.id, shopName: s.name, imgIndex: si * 10 + pi }))
-    ).filter(p => p.isPopular || p.isFeatured).slice(0, 10),
+    ).slice(0, 10),
   [shops]);
  
   const topRated  = useMemo(() => [...shops].sort((a, b) => b.rating - a.rating).slice(0, 8), [shops]);
