@@ -1,0 +1,32 @@
+import type { Metadata } from 'next';
+import './globals.css';
+import ThemeSync from '@/components/ui/ThemeSync';
+import LanguageSync from '@/components/ui/LanguageSync';
+
+export const metadata: Metadata = {
+  title: 'Purani Dukan | Meerut Heritage Discovery',
+  description: 'Discover heritage shops of Meerut',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        />
+      </head>
+      <body suppressHydrationWarning className="antialiased">
+        <ThemeSync />
+        <LanguageSync />
+        {children}
+      </body>
+    </html>
+  );
+}
