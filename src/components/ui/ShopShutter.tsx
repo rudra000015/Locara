@@ -15,7 +15,12 @@ export default function FancyShutter({ children }: { children: React.ReactNode }
   useEffect(() => {
     const a = new Audio("/sounds/videoplayback.mp3");
     a.volume = 0.7;
+    a.preload = "auto";
+    a.crossOrigin = "anonymous";
     setAudio(a);
+    
+    // Preload audio
+    a.load();
   }, []);
  
   const handleWheel = useCallback((e: WheelEvent) => {
@@ -64,7 +69,15 @@ export default function FancyShutter({ children }: { children: React.ReactNode }
  
   const triggerOpen = () => {
     setIsAnimating(true);
-    if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+    if (audio) { 
+      audio.currentTime = 0; 
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.warn('Audio playback failed:', error);
+        });
+      }
+    }
     setTimeout(() => {
       setIsOpen(true);
       sessionStorage.setItem("shutter_opened", "true");
