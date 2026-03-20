@@ -13,14 +13,28 @@ export default function FancyShutter({ children }: { children: React.ReactNode }
   const ropePulled                      = useRef(false);
  
   useEffect(() => {
-    const a = new Audio("/sounds/videoplayback.mp3");
-    a.volume = 0.7;
-    a.preload = "auto";
-    a.crossOrigin = "anonymous";
-    setAudio(a);
+    // Create audio element with proper setup
+    const audioElement = new Audio();
+    audioElement.src = "/sounds/videoplayback.mp3";
+    audioElement.volume = 0.7;
+    audioElement.preload = "auto";
     
-    // Preload audio
-    a.load();
+    // Add event listeners for debugging
+    audioElement.addEventListener('canplay', () => {
+      console.log('Audio is ready to play');
+    });
+    
+    audioElement.addEventListener('error', (e) => {
+      console.error('Audio loading error:', e);
+    });
+    
+    setAudio(audioElement);
+    
+    // Cleanup
+    return () => {
+      audioElement.pause();
+      audioElement.src = '';
+    };
   }, []);
  
   const handleWheel = useCallback((e: WheelEvent) => {
@@ -69,15 +83,34 @@ export default function FancyShutter({ children }: { children: React.ReactNode }
  
   const triggerOpen = () => {
     setIsAnimating(true);
-    if (audio) { 
-      audio.currentTime = 0; 
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          console.warn('Audio playback failed:', error);
-        });
+    
+    if (audio) {
+      try {
+        audio.currentTime = 0;
+        const playPromise = audio.play();
+        
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              console.log('Audio playing successfully');
+            })
+            .catch(error => {
+              console.warn('Audio playback failed:', error.message);
+              // Try again with a slight delay
+              setTimeout(() => {
+                audio.play().catch(() => {
+                  console.error('Retry failed:', error);
+                });
+              }, 100);
+            });
+        }
+      } catch (error) {
+        console.error('Audio error:', error);
       }
+    } else {
+      console.warn('Audio element not initialized');
     }
+    
     setTimeout(() => {
       setIsOpen(true);
       sessionStorage.setItem("shutter_opened", "true");
