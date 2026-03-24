@@ -10,7 +10,7 @@ export default function ErrorBoundary({ children }: { children: ReactNode }) {
           </svg>
         </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Something went wrong</h2>
-        <p className="text-gray-600 mb-6">We're having trouble loading this page. Please try refreshing.</p>
+        <p className="text-gray-600 mb-6">We&apos;re having trouble loading this page. Please try refreshing.</p>
         <button
           onClick={() => window.location.reload()}
           className="w-full py-3 bg-gradient-to-r from-[#8d5524] to-[#b87333] text-white font-bold rounded-lg hover:shadow-lg transition-all"
