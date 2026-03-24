@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Compass, LogIn, Store } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { useT } from '@/i18n/useT';
@@ -15,46 +15,108 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
   const { setUser, showToast } = useStore();
   const t = useT();
 
+  // Check for existing user on mount (no auth API calls)
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user_data');
+    if (storedUser) {
+      try {
+        const userData = JSON.parse(storedUser);
+        setUser(userData, userData.role);
+        setLoading(false);
+        onLoginSuccess();
+        return;
+      } catch (error) {
+        console.log('Failed to load stored user');
+        localStorage.removeItem('user_data');
+      }
+    }
+    setLoading(false);
+  }, [setUser, role, onLoginSuccess]);
+
   const triggerSuccess = (userData: any, userRole: 'explorer' | 'owner') => {
     setUser(userData, userRole);
-    onLoginSuccess(); 
+    onLoginSuccess();
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) { setError(t('auth_enter_email_password')); return; }
+    setError('');
+    setLoading(true);
     showToast(t('toast_signing_in'));
+
+    // Simulate login without database
     setTimeout(() => {
-      triggerSuccess({ 
-        name: email.split('@')[0], 
-        img: `https://api.dicebear.com/7.x/notionists/svg?seed=${email}` 
-      }, role);
+      const userData = {
+        name: email.split('@')[0],
+        email: email,
+        img: `https://api.dicebear.com/7.x/notionists/svg?seed=${email}`,
+        role: role
+      };
+      
+      localStorage.setItem('user_data', JSON.stringify(userData));
+      triggerSuccess(userData, role);
+      setLoading(false);
+      showToast('Login successful!');
     }, 800);
   };
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!email || !password) { setError(t('auth_enter_email_password')); return; }
+    setError('');
+    setLoading(true);
     showToast(t('toast_creating_account'));
+
+    // Simulate signup without database
     setTimeout(() => {
+      const userData = {
+        name: email.split('@')[0],
+        email: email,
+        img: `https://api.dicebear.com/7.x/notionists/svg?seed=${email}`,
+        role: role
+      };
+      
+      localStorage.setItem('user_data', JSON.stringify(userData));
+      triggerSuccess(userData, role);
+      setLoading(false);
       showToast(t('toast_account_created'));
-      triggerSuccess({ 
-        name: email.split('@')[0], 
-        img: `https://api.dicebear.com/7.x/notionists/svg?seed=${email}` 
-      }, role);
-    }, 1200);
+    }, 800);
   };
 
   const handleGoogle = () => {
     showToast(t('toast_connecting_google'));
     setTimeout(() => {
-      triggerSuccess({ 
+      const userData = {
         name: 'Heritage Explorer', 
-        img: 'https://api.dicebear.com/7.x/notionists/svg?seed=Google' 
-      }, role);
+        email: 'explorer@locara.com',
+        img: 'https://api.dicebear.com/7.x/notionists/svg?seed=Google',
+        role: role
+      };
+      localStorage.setItem('user_data', JSON.stringify(userData));
+      triggerSuccess(userData, role);
     }, 1200);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-3 sm:p-4 bg-transparent">
+        <div className="w-full max-w-md bg-white p-6 sm:p-10 rounded-3xl sm:rounded-[2.5rem] shadow-2xl border border-gray-100 relative overflow-hidden">
+          <div className="text-center">
+            <div className="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-[#8d5524] to-[#b87333] text-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl sm:text-4xl shadow-lg">
+              <div className="animate-spin w-7 h-7 border-2 border-white border-t-transparent rounded-full"></div>
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-black bg-gradient-to-r from-[#8d5524] to-[#b87333] bg-clip-text text-transparent mb-2">
+              LOCARA
+            </h2>
+            <p className="text-gray-500 font-medium text-sm">Loading...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-3 sm:p-4 bg-transparent">

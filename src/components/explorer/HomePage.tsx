@@ -135,7 +135,7 @@ function HeroBanner({ totalShops, onListShop }: { totalShops: number; onListShop
               initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}
               style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: C.copper, fontFamily: 'monospace', marginBottom: 6 }}
             >
-              Locara Market
+              Locara 
             </motion.p>
             <motion.h1
               initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.22 }}
@@ -279,42 +279,7 @@ function CategoryPills({ onCat }: { onCat: (cat: string) => void }) {
   );
 }
  
-// ── Shop Stories ──────────────────────────────────────────────
-function ShopStories({ shops, onOpen }: { shops: Shop[]; onOpen: (id: string) => void }) {
-  if (!shops.length) return null;
-  return (
-    <div className="mb-6">
-      <div className="flex gap-4 overflow-x-auto no-scrollbar pb-1">
-        {shops.slice(0, 10).map((s, i) => (
-          <motion.button
-            key={s.id}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: i * 0.05 }}
-            onClick={() => onOpen(s.id)}
-            className="flex flex-col items-center gap-2 flex-shrink-0"
-          >
-            <div className="relative">
-              <div className="w-16 h-16 rounded-full p-0.5"
-                style={{ background: `linear-gradient(135deg, ${C.copper}, ${C.gold}, #f59e0b)` }}>
-                <div className="w-full h-full rounded-full bg-white p-0.5">
-                  <img src={s.ownerImg} alt={s.name}
-                    className="w-full h-full rounded-full object-cover bg-gray-100" />
-                </div>
-              </div>
-              {s.openNow && (
-                <span className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white" />
-              )}
-            </div>
-            <span className="text-[11px] font-bold text-gray-700 text-center leading-tight max-w-[60px] truncate">
-              {s.name.split(' ')[0]}
-            </span>
-          </motion.button>
-        ))}
-      </div>
-    </div>
-  );
-}
+// 
  
 // ── Popular Shop Card (screenshot style) ─────────────────────
 function PopularShopCard({ shop: s, index }: { shop: Shop; index: number }) {
@@ -453,9 +418,7 @@ function ShopTileCard({ shop: s, index }: { shop: Shop; index: number }) {
         <div className="flex items-center gap-2 text-[10px] text-gray-400 pt-2 border-t border-gray-50">
           <span className="flex items-center gap-1 font-bold"><i className="fas fa-clock text-[9px]" /> 15 min</span>
           <span className="text-gray-200">|</span>
-          <span style={{ color: '#059669' }} className="flex items-center gap-1 font-bold">
-            <i className="fas fa-motorcycle text-[9px]" /> Free
-          </span>
+         
         </div>
       </div>
     </motion.div>
@@ -598,7 +561,7 @@ export default function HomePage({ query, filters, shops, loading, error, refetc
           <CategoryPills onCat={cat => {}} />
  
           {/* Shop stories */}
-          {!loading && <ShopStories shops={shops} onOpen={openShopAndNavigate} />}
+          {/* {!loading && <ShopStories shops={shops} onOpen={openShopAndNavigate} />} */}
  
           {/* Popular Shops section */}
           {!loading && topRated.length > 0 && (
